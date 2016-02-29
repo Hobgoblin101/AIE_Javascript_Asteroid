@@ -1,0 +1,83 @@
+var GameStartTime = Date.now();
+var LoadedFiles = []; //Make LoadedFiles a global variable
+
+/**Function Library Start**/
+  function GameTime(){
+    time = Date.now() - GameStartTime;
+      if (time > 60000){
+        time = (time / 1000) / 60 + 'mins'
+      }else{
+        time = time / 1000 + 'ms'
+      };
+    return time
+  };
+
+  function CreateFile(name, content){
+  	textFile = null,
+  	data = new Blob([content], {type: 'text/plain'});
+
+  	if (textFile !== null){
+  		window.URL.revokeObjectURL(data);
+  	}
+
+  	textFile = window.URL.createObjectURL(data);
+
+  	return textFile;
+  };
+
+  function loadScript(url, callback){
+    // Adding the script tag to the head as suggested before
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
+
+    // Then bind the event to the callback function.
+    // There are several events for cross browser compatibility.
+    script.onreadystatechange = callback;
+    script.onload = callback;
+
+    // Fire the loading
+    head.appendChild(script);
+  }
+
+
+  function require(script){
+    //Check if file is already Loaded
+    var NewFile = false;
+    index = LoadedFiles.indexOf(script, 0);
+    //Check if scripts is in list. -1 means it is not in list
+    if ( index == "-1" ){
+      NewFile = true;
+      //Load File
+      var loading = true;
+      var NewScript =document.createElement('script');
+	NewScript.async = "async";
+	NewScript.src = script;
+      NewScript.onload = setTimeout(function() { var loading = false }, 1);
+      document.body.appendChild(NewScript);
+
+      while (loading = false){
+        setTimeout(function() {console.debug(GameTime() + ' Loading')}, 11)
+      };
+
+      //Add File to loaded list
+      LoadedFiles.push(script);
+    };
+
+    //Return if it is new
+    return NewFile
+  };
+
+//Wait to make sure files are loaded then load main game starting script
+
+
+
+/**require("./settings.js");
+require("./scripts/2dVector.js");
+require("./scripts/physics.js");
+require("./scripts/objects/player.js");
+require("./scripts/input.js");
+require("./scripts/objects/asteroid.js");
+setTimeout(function(){ require("./scripts/main.js") }, 100);
+**/
