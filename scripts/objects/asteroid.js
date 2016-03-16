@@ -79,9 +79,9 @@ function UpdateAsteroid(deltaTime){
   for(var i=0; i<asteroids.length; i++){
 
     //Check if asteroid is colliding with Player
-    colliding = Distance( [(player.Location[0]), (player.Location[1])] , [(asteroids[i].Location[0] + asteroids[i].width), asteroids[i].Location[1] + asteroids[i].height]);
+    colliding = Distance( [(player.Location[0]), (player.Location[1])] , [(asteroids[i].Location[0] + asteroids[i].width / 2), (asteroids[i].Location[1] + asteroids[i].height / 2) ]);
     if ((colliding <= player.image.width / 1.5)){
-      window.alert('You Lost You Machine');
+      window.alert('You Lost Your Machine');
       console.log('You Died');
       reset();
       break;
