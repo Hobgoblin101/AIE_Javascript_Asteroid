@@ -14,28 +14,25 @@ require("./scripts/objects/asteroid.js");
 console.debug("Running Main Script...");
 
 function reset(){
-  alert('reset');
   //Asteroid
   var ASTEROID_SPEED = 1.3; //0.8
   var spawnTimer = 1;
-  var asteroids = [];
-  asteroids.splice(0,asteroids.length);
+  asteroids = [];
   //Player
-  var player = {
-      image: document.createElement("img"),
-      Location: [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2],
-      Velocity: [0, 0],
-      rotation: 0,
-      direction: [0, 0],
-      VectorRotation: [0, 0],
-      ForwardThrust: 15,
-      TurnSpeed: 4,
-      s: 0,
-      c: 0
-  };
+  player.Location = [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2];
+  player.Velocity = [0, 0];
+  player.rotation = 0;
+  player.direction = [0, 0];
+  player.VectorRotation = [0, 0];
+  player.ForwardThrust = 15;
+  player.TurnSpeed = 4;
   //Bullets
-  var bullets = [];
-  var BULLET_SPEED = 10;
+  bullets = [];
+  BULLET_SPEED = 10;
+  //Reset inputs
+  KeysDown = [];
+  startTime = Date.now();
+  score = 0;
 };
 
 /**Tick**/
