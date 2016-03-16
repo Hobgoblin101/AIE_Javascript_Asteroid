@@ -1,54 +1,123 @@
 //Asteroid
-var asteroid = {
-    image: document.createElement("img"),
-    Location: [100, 100],
-    width: 69,
-    height: 75,
-    direction: [0, 0],
-    speed: 0.8,
-    isDead: false
-};
-asteroid.image.src = "sprites/rock_large.png"
+var ASTEROID_SPEED = 1.3; //0.8
+var spawnTimer = 1;
 
-function UpdateAsteroid(){
-  //Test it intersecting or dead
-  if(bullet.isDead == false){
-    bullet.x += bullet.velocityX;
-    bullet.y += bullet.velocityY;
-    context.drawImage(bullet.image,
-    bullet.x - bullet.width/2,
-    bullet.y - bullet.height/2);
+var asteroids = [];
 
-    if(asteroid.isDead == false){
-      var hit = intersects(
-        bullet.x, bullet.y,
-        bullet.width, bullet.height,
-        asteroid.x, asteroid.y,
-        asteroid.width, asteroid.height);
-      if(hit == true){
-        bullet.isDead = true;
-        asteroid.isDead = true;
-      }
-    };
+spawnAsteroid();
+spawnAsteroid();
+spawnAsteroid();
+spawnAsteroid();
+
+function spawnAsteroid(){
+  var type = rand(0, 3);
+  var asteroid = {};
+
+  asteroid.image = document.createElement("img");
+  asteroid.image.src = "sprites/rock_large.png";
+  asteroid.width = 69;
+  asteroid.height = 75;
+
+  asteroid.Location = [1, 2]; //Make location a 2D_Vector
+  //Spawn asteroid on random side of the screen
+  spawnSide = rand(1, 4);
+  if (spawnSide == 1){
+    //Spawn top
+    asteroid.Location[0] = rand(0, SCREEN_WIDTH);
+    asteroid.Location[1] = 0 - asteroid.height;
+  }else if (spawnSide == 2){
+    asteroid.Location[1] = rand(0, SCREEN_HEIGHT);
+    asteroid.Location[0] = SCREEN_WIDTH;
+  }else if (spawnSide == 3){
+    asteroid.Location[0] = rand(0, SCREEN_WIDTH)
+    asteroid.Location[1] = SCREEN_HEIGHT;
+  }else if (spawnSide == 4){
+    asteroid.Location[0] = 0 - asteroid.width;
+    asteroid.Location[1] = rand(0, SCREEN_HEIGHT)
+  }
+
+  //Random direction
+  asteroid.Direction = [rand(-10,10), rand(-10,10)]; //Create randome direction
+
+  var magnitude = (asteroid.Direction[0] * asteroid.Direction[0]) + (asteroid.Direction[1] * asteroid.Direction[1]);
+  if (magnitude != 0){
+    //Make direction in the correct raito
+    var oneOverMag = 1 / Math.sqrt(magnitude);
+    asteroid.Direction[0] *= oneOverMag;
+    asteroid.Direction[1] *= oneOverMag;
   };
 
-  //Handle Asteroid Movement
-  asteroid.direction[0] = 10;
-  asteroid.direction[1] = 8;
-  // 'normalize' the velocity (the hypotenuse of the triangle
-  // formed by x,y will equal 1)
-  var magnitude = Math.sqrt((asteroid.direction[0] * asteroid.direction[0])
-  + (asteroid.direction[1] * asteroid.direction[1]));
-  if (magnitude != 0) {
-      asteroid.direction[0] /= magnitude;
-      asteroid.direction[1] /= magnitude;
+  asteroid.Move = [ asteroid.Direction[0] * SCREEN_WIDTH, asteroid.Direction[1] * SCREEN_HEIGHT ];
+
+  new_AsteroidSpeed = rand(1, 4);
+
+  asteroid.Velocity = [ -asteroid.Direction[0] * new_AsteroidSpeed, -asteroid.Direction[1] * new_AsteroidSpeed ];
+
+  asteroids.push(asteroid);
+};
+
+function UpdateAsteroid(deltaTime){
+  //Do for each asteroid
+  for(var i=0; i<asteroids.length; i++){
+
+    //Velocity Handler
+    asteroids[i].Location[0] += asteroids[i].Velocity[0];
+    asteroids[i].Location[1] += asteroids[i].Velocity[1];
+
+    //Transpose asteroids
+    if (asteroids[i].Location[0] < 1 - asteroids[i].width){
+      asteroids[i].Location[0] = SCREEN_WIDTH;
+    }else if ((asteroids[i].Location[0] - asteroids[i].width) > SCREEN_WIDTH){
+      asteroids[i].Location[0] = 0 - asteroids[i].width;
+    }else if (asteroids[i].Location[1] < 1 - asteroids[i].height){
+      asteroids[i].Location[1] = SCREEN_HEIGHT;
+    }else if (asteroids[i].Location[1] > SCREEN_HEIGHT){
+      asteroids[i].Location[1] = 0 - asteroids[i].height;
+    }
   }
-  //Draw Asteroid
-  // update and draw the asteroid (we don't need to
-  // worry about rotation here)
-  var velocityX = asteroid.direction[0] * asteroid.speed;
-  var velocityY = asteroid.direction[1] * asteroid.speed;
-  asteroid.Location[0] += velocityX;
-  asteroid.Location[1] += velocityY;
-  context.drawImage(asteroid.image, asteroid.Location[0] - asteroid.width / 2, asteroid.Location[1] - asteroid.height / 2);
+
+  for(var i=0; i<asteroids.length; i++){
+
+    //Check if asteroid is colliding with Player
+    colliding = Distance( [(player.Location[0] + (player.image.width / 2)), (player.Location[1] + (player.image.height / 2))] , [(asteroids[i].Location[0] + asteroids[i].width / 2), asteroids[i].Location[1] + asteroids[i].height /2]);
+    if ((colliding <= asteroids[i].width / 2)){
+      window.alert('You Lost You Machine');
+      console.log('You Died');
+      reset();
+      break;
+      return;
+    }
+
+    //After moving is finnished
+    //Check if is colliding with bullet
+    for (b=0; b < bullets.length; b++){
+
+      colliding = (Distance(bullets[b].Location, [(asteroids[i].Location[0] + asteroids[i].width / 2), asteroids[i].Location[1] + asteroids[i].height /2]) <= asteroids[i].width / 1.5 )
+      if (colliding == true){
+        bullets.splice(b, 1);
+        asteroids.splice(i, 1);
+        score += 2;
+      };
+    }
+  }
+
+
+  //Check if timer has expired and it should spawn a new asteroid
+  if (spawnTimer > 0){
+    spawnTimer -= deltaTime;
+  }else{
+    spawnTimer = 1 / ((Timer / 60) + 1);
+    spawnAsteroid();
+  }
+
+  //Draw all the asteroids
+  for (var i=0; i<asteroids.length; i++){
+    context.drawImage(asteroids[i].image, asteroids[i].Location[0] , asteroids[i].Location[1]);
+  };
+
+  spawnTimer -= deltaTime;
+
 }
+
+//On Finnish
+tickEvents.push("UpdateAsteroid")

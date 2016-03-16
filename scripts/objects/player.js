@@ -11,49 +11,19 @@ var player = {
     image: document.createElement("img"),
     Location: [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2],
     Velocity: [0, 0],
-    worldVelocity: [0, 0],
     rotation: 0,
     direction: [0, 0],
     VectorRotation: [0, 0],
-    ForwardThrust: 0.25,
-    TurnSpeed: 0.08,
+    ForwardThrust: 15,
+    TurnSpeed: 4,
     s: 0,
     c: 0
 };
 player.image.src = "sprites/ship.png"
 
-function playerShoot() {
-    //we can only have 1 bullet at a time
-    if (bullet.isDead == false){
-        return;
-    }
-
-    //start off with a velocity that shoots the bullet straight up
-    bullet.Velocity[1] = 1;
-
-    //Now rotate this vector acording to the ship's current rotation
-    var s = Math.sin(player.rotation);
-    var c = Math.cos(player.rotation);
-
-    //For an explenation of this formula, see http://en.wikipedia.org/wiki/Rotation_matrix
-    bullet.Velocity[0] = (0 * c) - (1 * s);
-    bullet.Velocity[1] = (0 * s) + (1 * c);
-
-    //Don't bother storing a direction and calculation the velocity every frame, because it won't change.
-    //Just store the pre-calculated velocity
-    bullet.Velocity[0] = bullet.Velocity[0] * bullet.speed;
-    bullet.Velocity[1] = bullet.Velocity[1] * bullet.speed;
-
-    //Don't forget to set the bullet's position
-    bullet.Location[0] = player.Location[0];
-    bullet.Location[1] = player.Location[1];
-
-    bullet.isDead = false;
-};
-
 function UpdatePlayer(dt){
   //Get Rotation
-  player.direction[0] = (0 * Math.cos(player.rotation)) - (1 * Math.sin(player.rotation))
+  player.direction[0] = (0 * Math.cos(player.rotation)) - (1 * Math.sin(player.rotation));
   player.direction[1] = (0 * Math.cos(player.rotation)) + (1 * Math.cos(player.rotation));
 
   //Handle Velocity and Movement
@@ -61,6 +31,17 @@ function UpdatePlayer(dt){
   player.Location[1] += player.Velocity[1];
   player.Velocity[0] = player.Velocity[0] / Friction;
   player.Velocity[1] = player.Velocity[1] / Friction;
+
+  //Transpose Player
+  if (player.Location[0] < 1 - player.image.width){
+    player.Location[0] = SCREEN_WIDTH;
+  }else if ((player.Location[0] - player.image.width) > SCREEN_WIDTH){
+    player.Location[0] = 0 - player.image.width;
+  }else if (player.Location[1] < 1 - player.image.height){
+    player.Location[1] = SCREEN_HEIGHT;
+  }else if (player.Location[1] > SCREEN_HEIGHT){
+    player.Location[1] = 0 - player.image.height;
+  }
 
   //Draw Player
   context.save();
@@ -70,4 +51,5 @@ function UpdatePlayer(dt){
   context.restore();
 };
 
-console.debug('confirm Load');
+//On Finnish
+tickEvents.push("UpdatePlayer")

@@ -2,7 +2,7 @@ console.debug('Running Settings...');
 
 //Game Settings
 var MAXFRAMECOUNT = 60;
-var SCREEN_HEIGHT = (canvas.height - 100);
+var SCREEN_HEIGHT = (canvas.height);
 var SCREEN_WIDTH = canvas.width;
 
 //Controls

@@ -1,7 +1,7 @@
 console.debug("Running Physics...");
 
 //Setup variables
-var Friction = 1.015; //1.025
+var Friction = 1.01; //1.025
 var lastTime;
 var KeysDown = [];
 var dt;

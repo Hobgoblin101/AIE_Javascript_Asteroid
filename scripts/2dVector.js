@@ -10,8 +10,11 @@ function RotateVector(center, end, angle){
 };
 
 function Distance(start, end){
-	var NewEnd = [(end[0] - start[1]), (end[1] - start[1])];
-	var distance = Math.sqrt((NewEnd[0] * NewEnd[0]) + (NewEnd[1] * NewEnd[1]));
+	var NewEnd = [
+		(end[0] - start[0]),
+		(end[1] - start[1])
+	];
+	var distance = Math.sqrt( (NewEnd[0] * NewEnd[0]) + (NewEnd[1] * NewEnd[1]) );
 
 	return distance
 };
@@ -24,4 +27,24 @@ function LookAtRotation(start, target){
 
 function rand(floor, ceil){
 	return Math.floor( (Math.random() * (ceil-floor)) +floor);
+};
+
+function overlappingBox(location, startpoint, endpoint){
+	if (location[0] > startpoint[0] &&
+			location[1] > startpoint[1] &&
+			location[0] < endpoint[0] &&
+			location[1] < endpoint[1]){
+				return true;
+			}else{
+				return false;
+			}
+};
+
+function normalise(locaiton){
+	var length = Math.sqrt((location[0] * location[0]) + (location[1] * location[1]));
+
+	location[0] = location[0] / length;
+	location[1] = location[1] / length;
+
+	return location
 };
