@@ -2,6 +2,7 @@ var dt = 1.0;
 var blur = 2;
 var score = 0;
 var startTime = Date.now();
+var Timer
 
 //Load required
 require("./scripts/2dVector.js");
@@ -43,7 +44,7 @@ function run() {
     lastTime = now;
 
     //Fill Background
-    context.fillStyle = "rgba(0, 0, 0, " +  (1 / blur) + ")";
+    context.fillStyle = "rgba(0, 0, 0, " +  (1 / (blur * ((Timer + 1) / 5))) + ")";
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     InputHandeler(dt);
