@@ -1,6 +1,7 @@
 var GameStartTime = Date.now();
 var LoadedFiles = []; //Make LoadedFiles a global variable
 var tickEvents = []; //Define list of functions to be called on tick
+var c_filesLoading = 0;
 
 
 /**Function Library Start**/
@@ -15,6 +16,24 @@ function GameTime(GameStartTime){
   return time
 };
 
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    }
+    return "";
+}
+
 function CreateFile(name, content){
 	textFile = null,
 	data = new Blob([content], {type: 'text/plain'});
@@ -26,6 +45,7 @@ function CreateFile(name, content){
 	return textFile;
 };
 
+var LoadedFiles = []; //Make LoadedFiles a global variable
 
 function require(script){
   //Sets defualt state
@@ -40,12 +60,13 @@ function require(script){
     NewFile = true; //Tell it that it's a new scripts
 
     //Load File
+    c_filesLoading += 1;
     var loading = true;
     var NewScript =document.createElement('script');
   	NewScript.src = script;
     script.type = 'text/javascript';
     NewScript.async = "async";
-    NewScript.onload = setTimeout(function() { var loading = false; console.debug("Finnished Loading: " + script) }, 11);
+    NewScript.onload = setTimeout(function() { var loading = false; console.debug("Finnished Loading: " + script); c_filesLoading -= 1; }, 11);
 
     //Place in HTML document
     document.getElementsByTagName('head')[0].appendChild(NewScript);
@@ -60,14 +81,14 @@ function require(script){
     return NewFile
   };
 
-//Wait to make sure files are loaded then load main game starting script
 
 
-
+require("./scripts/objects/howler.js");
 require("./settings.js");
+require("./scripts/objects/bullet.js");
 require("./scripts/2dVector.js");
 require("./scripts/physics.js");
 require("./scripts/objects/player.js");
 require("./scripts/input.js");
 require("./scripts/objects/asteroid.js");
-setTimeout(function(){ require("./scripts/main.js") }, 100);
+require("./scripts/main.js");

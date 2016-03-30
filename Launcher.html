@@ -2,6 +2,10 @@
 <html>
 <head>
 	<title>Asteroids</title>
+	<script>
+		highscore = 0;
+		state = 'Splash'
+	</script>
 </head>
 <body style="margin: 0px; padding: 0px">
 	<canvas id="gameCanvas" width="640" height="480" style="margin: 0px; padding: 0px">
@@ -13,14 +17,6 @@
 	var canvas = document.getElementById("gameCanvas");
 	var context = canvas.getContext("2d");
 	</script>
-
-	<!--Load Scripts-->
-	<script src="./settings.js" async></script>
-	<script src="./scripts/2dVector.js" async></script>
-	<script src="./scripts/physics.js" async></script>
-	<script src="./scripts/objects/player.js" async></script>
-	<script src="./scripts/input.js" async></script>
-	<script src="./scripts/objects/asteroid.js" async></script>
 	<script src="./scripts/index.js" async></script>
 </body>
 </html>

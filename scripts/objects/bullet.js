@@ -22,6 +22,7 @@ function playerShoot() {
 
     bullets.push(bullet);
     score -= 1;
+    fireSound.play();
 };
 
 function UpdateBullet(deltaTime){

@@ -58,7 +58,7 @@ function spawnAsteroid(){
 
 function UpdateAsteroid(deltaTime){
   //Do for each asteroid
-  for(var i=0; i<asteroids.length; i++){
+  for(var i=0; i < asteroids.length; i++){
 
     //Velocity Handler
     asteroids[i].Location[0] += asteroids[i].Velocity[0];
@@ -81,11 +81,7 @@ function UpdateAsteroid(deltaTime){
     //Check if asteroid is colliding with Player
     colliding = Distance( [(player.Location[0]), (player.Location[1])] , [(asteroids[i].Location[0] + asteroids[i].width / 2), (asteroids[i].Location[1] + asteroids[i].height / 2) ]);
     if ((colliding <= player.image.width / 1.5)){
-      window.alert('You Lost Your Machine' + ' | Final Score: ' + (score * Timer));
-      console.log('You Died');
-      reset();
-      break;
-      return;
+      state = 'Death'
     }
 
     //After moving is finnished
